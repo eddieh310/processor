@@ -1,0 +1,96 @@
+/****************************************************************\
+| Name of program: CSE341 SE TB
+| Author: Riad Mukhtarov
+| Date Created: 05/02/2023
+| Date last updated: 05/07/2023
+| Function: Tests the functionality of SE.
+| Additional Comments: This tb runs 5 test cases on SE module.
+\****************************************************************/
+
+module sign_extender_tb();
+
+	// Input signal for the sign extender module
+	logic signed [15:0] in_tb;
+    // Expected output signal for the sign extender module
+	logic signed [31:0] expected_out;
+	// Output signal from the sign extender module
+	logic signed [31:0] out_tb;
+
+    // Instantiate the sign extender module with 16-bit input width and 32-bit output width
+    sign_extender DUT(
+      .in(in_tb),
+      .out(out_tb)
+    );
+
+	// Test cases. Setting input and expected_output.
+	// Check if the actual output matches the expected output
+	// print pass/fail message accordingly
+
+    initial begin
+        // Test case 1
+        // Set input to maximum 16-bit signed value
+        in_tb = 16'shFFFF;
+        expected_out = 32'shFFFFFFFF;
+
+        #10;
+		if(out_tb !== expected_out) begin
+			$display("Test case 1 failed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+			$finish; // Terminate the simulation
+        end else begin
+			$display("Test case 1 passed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+        end
+
+        // Test case 2
+        in_tb = 16'sh1234;
+        expected_out = 32'sh00001234;
+        #10;
+        
+		if(out_tb !== expected_out) begin
+			$display("Test case 2 failed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+			$finish; // Terminate the simulation
+        end else begin
+			$display("Test case 2 passed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+        end
+
+        // Test case 3        
+        in_tb = 16'sh8000; // (negative value)
+        expected_out = 32'shFFFF8000; // (sign-extended negative value)
+        
+        #10;
+       
+		if(out_tb !== expected_out) begin
+			$display("Test case 3 failed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+			$finish; // Terminate the simulation
+        end else begin
+			$display("Test case 3 passed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+        end
+
+		// Test case 4
+		in_tb = 16'sh0000;		
+		expected_out = 32'sh00000000;
+		
+		#10;
+    
+		if(out_tb !== expected_out) begin
+			$display("Test case 4 failed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+			$finish; // Terminate the simulation
+		end else begin
+			$display("Test case 4 passed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+		end
+
+		// Test case 5
+		in_tb = 16'sh7FFF; // maximum positive
+		expected_out = 32'sh00007FFF; // sign extended positive value
+
+		#10;
+
+		if(out_tb !== expected_out) begin
+			$display("Test case 5 failed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+			$finish; // Terminate the simulation
+		end else begin
+			$display("Test case 5 passed. Input: %h, Expected output: %h, Actual output: %h", in_tb, expected_out, out_tb);
+		end
+		
+		#10 $finish;
+	end
+endmodule

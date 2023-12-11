@@ -1,0 +1,274 @@
+// Code your testbench here
+// or browse Examples
+/* ***************************************************************\
+| Name of program: CSE341 1 Bit ALU test bench
+| Author: Ian Witmer
+| Date Created: 5/1/2023
+| Date last updated: 5/2/2023
+| Function: Tests the functionality of a 1 Bit ALU.
+| Additional Comments: ADD AND SUBTRACT TESTS EXPLICITLY TEST OVERFLOW FUNCTIONALITY AS WELL AS RESULT AND CARRY-OUT.
+SLT TESTS DO NOT EXPLICITLY TEST OVERFLOW, BUT THERE ARE 2 CASES IN WHICH CORRECTNESS OF OVERFLOW
+AND ITS EFFECT ON SET WILL DETERMINE WHETHER THE RESULT IS CORRECT.
+
+!!!!!Replace the dashes before and within testALU with the values that
+correspond to your module name, and its input and output names!!!!!!!!!!!!
+\****************************************************************/
+
+
+
+module onebitalu_tb;
+  reg [3:0] ALUctl_tb;
+  reg A_tb, B_tb, Cin_tb, less_tb;
+  wire result_tb, Cout_tb, set_tb, overflow_tb;
+  
+  alu1bit testALU(.a(A_tb), .b(B_tb), .cin(Cin_tb), .control(ALUctl_tb), .less(less_tb), .result(result_tb), .cout(Cout_tb), .set(set_tb), .overflow(overflow_tb));
+  initial begin
+    ALUctl_tb = 4'b0000;
+    A_tb = 0;
+    B_tb = 0;
+    Cin_tb = 0;
+    less_tb = 0;
+    end
+  always begin
+    //test and
+    #400 if (result_tb !== 0) $display("AND 0000 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 0) $display("AND 1000 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 0) $display("AND 0100 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 0) $display("AND 0010 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 1) $display("AND 1100 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 1) $display("AND 1110 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    ///////////////////////////////////////////////////////////////////////
+    #400 if (result_tb !== 0) $display("AND 1010 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0) $display("AND 0001 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0) $display("AND 1001 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0) $display("AND 0101 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 0) $display("AND 0011 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1) $display("AND 1101 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 1) $display("AND 1111 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 0) $display("AND 1011 Failed");
+    ALUctl_tb = 4'b0001; A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 0; //set up for or
+    
+    
+    //test or
+    #400 if (result_tb !== 0) $display("OR 0000 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 1) $display("OR 1000 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 1) $display("OR 0100 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 0) $display("OR 0010 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 1) $display("OR 1100 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 1) $display("OR 1110 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    ///////////////////////////////////////////////////////////////////////
+    #400 if (result_tb !== 1) $display("OR 1010 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0) $display("OR 0001 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1) $display("OR 1001 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1) $display("OR 0101 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 0) $display("OR 0011 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1) $display("OR 1101 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 1) $display("OR 1111 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 1) $display("OR 1011 Failed");
+    ALUctl_tb = 4'b1100; A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 0; //set up for nor
+    
+    
+    
+    //test nor
+    #400 if (result_tb !== 1) $display("NOR 0000 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 0) $display("NOR 1000 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 0) $display("NOR 0100 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 1) $display("NOR 0010 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 0) $display("NOR 1100 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 0) $display("NOR 1110 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    ///////////////////////////////////////////////////////////////////////
+    #400 if (result_tb !== 0) $display("NOR 1010 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1) $display("NOR 0001 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0) $display("NOR 1001 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0) $display("NOR 0101 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 1) $display("NOR 0011 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0) $display("NOR 1101 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 0) $display("NOR 1111 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 0) $display("NOR 1011 Failed");
+    ALUctl_tb = 4'b0010; A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 0; //set up for add
+    
+    
+    
+    //test add
+    #400 if (result_tb !== 0 | Cout_tb !== 0 | overflow_tb !== 0) $display("ADD 0000 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 0) $display("ADD 1000 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 0) $display("ADD 0100 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 1) $display("ADD 0010 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 1) $display("ADD 1100 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 1 | Cout_tb !== 1 | overflow_tb !== 0) $display("ADD 1110 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    ///////////////////////////////////////////////////////////////////////
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 0) $display("ADD 1010 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0 | Cout_tb !== 0 | overflow_tb !== 0) $display("ADD 0001 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 0) $display("ADD 1001 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 0) $display("ADD 0101 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 1) $display("ADD 0011 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 1) $display("ADD 1101 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 1 | Cout_tb !== 1 | overflow_tb !== 0) $display("ADD 1111 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 0) $display("ADD 1011 Failed");
+    ALUctl_tb = 4'b0110; A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 0; //set up for sub
+    
+    
+    
+    //test sub
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 0) $display("SUB 0000 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 1) $display("SUB 1000 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 0 | Cout_tb !== 0 | overflow_tb !== 0) $display("SUB 0100 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 0) $display("SUB 0010 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 0) $display("SUB 1100 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 0) $display("SUB 1110 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    ///////////////////////////////////////////////////////////////////////
+    #400 if (result_tb !== 1 | Cout_tb !== 1 | overflow_tb !== 0) $display("SUB 1010 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 0) $display("SUB 0001 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 1) $display("SUB 1001 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0 | Cout_tb !== 0 | overflow_tb !== 0) $display("SUB 0101 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 0) $display("SUB 0011 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1 | Cout_tb !== 0 | overflow_tb !== 0) $display("SUB 1101 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 0 | Cout_tb !== 1 | overflow_tb !== 0) $display("SUB 1111 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 1 | Cout_tb !== 1 | overflow_tb !== 0) $display("SUB 1011 Failed");
+    ALUctl_tb = 4'b0111; A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 0; //set up for slt
+
+  
+    
+    //test slt
+
+    #400 if (result_tb !== less_tb | set_tb !== 1) $display("SLT 0000 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== less_tb | set_tb !== 1/* | overflow_tb !== 1*/)
+$display("SLT 1000 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== less_tb | set_tb !== 0) $display("SLT 0100 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== less_tb | set_tb !== 0) $display("SLT 0010 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== less_tb | set_tb !== 1) $display("SLT 1100 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== less_tb | set_tb !== 0) $display("SLT 1110 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    ///////////////////////////////////////////////////////////////////////
+    #400 if (result_tb !== less_tb | set_tb !== 1) $display("SLT 1010 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== less_tb | set_tb !== 1) $display("SLT 0001 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== less_tb | set_tb !== 1/* | overflow_tb !== 1*/) $display("SLT 1001 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== less_tb | set_tb !== 0) $display("SLT 0101 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== less_tb | set_tb !== 0) $display("SLT 0011 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== less_tb | set_tb !== 1) $display("SLT 1101 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== less_tb | set_tb !== 0) $display("SLT 1111 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== less_tb | set_tb !== 1) $display("SLT 1011 Failed");
+    ALUctl_tb = 4'b1101; A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 0; //set up for nand
+    
+    
+    
+    //test NAND
+    #400 if (result_tb !== 1) $display("NAND 0000 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 1) $display("NAND 1000 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 1) $display("NAND 0100 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 1) $display("NAND 0010 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 0;
+    #400 if (result_tb !== 0) $display("NAND 1100 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 0;
+    #400 if (result_tb !== 0) $display("NAND 1110 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 0;
+    ///////////////////////////////////////////////////////////////////////
+    #400 if (result_tb !== 1) $display("NAND 1010 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1) $display("NAND 0001 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1) $display("NAND 1001 Failed");
+    A_tb = 0; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 1) $display("NAND 0101 Failed");
+    A_tb = 0; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 1) $display("NAND 0011 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 0; less_tb = 1;
+    #400 if (result_tb !== 0) $display("NAND 1101 Failed");
+    A_tb = 1; B_tb = 1; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 0) $display("NAND 1111 Failed");
+    A_tb = 1; B_tb = 0; Cin_tb = 1; less_tb = 1;
+    #400 if (result_tb !== 1) $display("NAND 1011 Failed");
+    ALUctl_tb = 4'b0000; A_tb = 0; B_tb = 0; Cin_tb = 0; less_tb = 0; //set up for and
+    
+  end
+  initial begin
+    $dumpfile("onebitalu.vcd");
+    $dumpvars;
+  end
+  initial begin
+    $display("\t\t\ta\tb\tcin\tless\tALUctl\tcout\tresult\tset\toverflow");
+    $monitor("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",$time,A_tb,B_tb,Cin_tb,less_tb,ALUctl_tb,Cout_tb,result_tb,set_tb,overflow_tb);
+  end
+ initial
+   #38800 $finish;
+endmodule
